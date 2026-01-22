@@ -1,0 +1,107 @@
+log:
+  model_name: spk_onl_tfm_lora_finetune
+  log_dir: !ref ./logs/<log[model_name]>
+  save_top_k: -1
+  start_epoch: 90
+  end_epoch: 99
+  save_avg_path: # Path to save averaged model
+
+training:
+  batch_size: 4
+  n_workers: 8
+  shuffle: True
+  lr: 1.0e-04  # Lower LR for fine-tuning
+  opt: adam
+  max_epochs: 2 # Fewer epochs for fine-tuning
+  grad_clip: 5
+  grad_accm: 1
+  scheduler:
+  schedule_scale:
+  warm_steps:
+  early_stop_epoch: 1
+  init_ckpt: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\ckpt\simu\FS-EEND_ch_91_100epo_avg_model.ckpt  # Pre-trained checkpoint
+  dist_strategy: # ddp
+  val_interval: 1
+  seed: 777
+
+# LoRA Configuration
+lora:
+  enabled: True
+  r: 8  # LoRA rank
+  lora_alpha: 16  # LoRA scaling factor
+  lora_dropout: 0.1
+  target_modules:
+    # Encoder attention layers
+    - "enc.layers.*.self_attn.attention.in_proj_weight"
+    - "enc.layers.*.self_attn.attention.out_proj.weight"
+    # Encoder feed-forward layers
+    - "enc.layers.*.linear1.weight"
+    - "enc.layers.*.linear2.weight"
+    # Conv1D layer
+    - "cnn.conv.weight"
+    # Decoder temporal attention
+    - "dec.layers.*.temp_attn.attention.in_proj_weight"
+    - "dec.layers.*.temp_attn.attention.out_proj.weight"
+    # Decoder speaker attention
+    - "dec.layers.*.spk_attn.in_proj_weight"
+    - "dec.layers.*.spk_attn.out_proj.weight"
+    # Decoder feed-forward
+    - "dec.layers.*.linear1.weight"
+    - "dec.layers.*.linear2.weight"
+  
+  # Freeze all non-LoRA parameters
+  freeze_base_model: True
+
+model:
+  arch: onlineTransformerDA_emb1dcnn_linear_nonautoreg_lora
+  params:
+    n_units: 256
+    n_heads: 4
+    enc_n_layers: 4
+    dec_dim_feedforward: 2048
+    dropout: 0.1
+    has_mask: True
+    max_seqlen: !ref <data[chunk_size]>
+    mask_delay: 0
+    dec_n_layers: 2
+    conv_delay: 9
+
+data:
+  num_speakers:
+  max_speakers: 4
+  context_recp: 7
+  label_delay: 0
+  feat_type: logmel23
+  chunk_size: 2000
+  subsampling: 10
+  use_last_samples: True
+  shuffle: False
+  augment:
+  feat:
+    sample_rate: 8000
+    win_length: 200
+    n_fft: 1024
+    hop_length: 80
+    n_mels: 23
+    f_max: 4000
+    power: 1
+  scaler:
+    statistic: instance
+    normtype: minmax
+    dims: [1, 2]
+
+  # Update these paths to your fine-tuning data
+  train_data_dir: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\data\train
+  val_data_dir: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\data\val
+task:
+  max_speakers:
+  spk_attractor:
+    enable: True
+    shuffle: True
+    enc_dropout: 0.5
+    dec_dropout: 0.5
+    consis_weight: 1
+
+debug:
+  num_sanity_val_steps: 3
+  log_every_n_steps: 5
