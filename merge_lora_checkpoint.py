@@ -90,6 +90,6 @@ if __name__ == "__main__":
     # Update these paths to your actual file names
     pure_merge(
         base_ckpt_path=r"C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\ckpt\simu\FS-EEND_ch_91_100epo_avg_model.ckpt", 
-        lora_ckpt_path=r"C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\logs\spk_onl_tfm_lora_finetune\version_0\last.ckpt", 
+        lora_ckpt_path=r"C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\last.ckpt",
         output_path="merged_inference.ckpt"
     )

@@ -1,6 +1,6 @@
 log:
   model_name: spk_onl_tfm_lora_finetune
-  log_dir: !ref ./logs/<log[model_name]>
+  log_dir: C:\Users\Rishabh Singh\Downloads\FS-EEND\logs
   save_top_k: -1
   start_epoch: 90
   end_epoch: 99
@@ -19,7 +19,7 @@ training:
   schedule_scale:
   warm_steps:
   early_stop_epoch: 1
-  init_ckpt: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\ckpt\simu\FS-EEND_ch_91_100epo_avg_model.ckpt  # Pre-trained checkpoint
+  init_ckpt: C:\Users\Rishabh Singh\Downloads\FS-EEND\ckpt\simu\FS-EEND_ch_91_100epo_avg_model.ckpt # Pre-trained checkpoint
   dist_strategy: # ddp
   val_interval: 1
   seed: 777
@@ -91,8 +91,8 @@ data:
     dims: [1, 2]
 
   # Update these paths to your fine-tuning data
-  train_data_dir: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\data\train
-  val_data_dir: C:\Users\Rishabh Singh\Downloads\FineTuning_LS-EEND\FS-EEND\FS-EEND\data\val
+  train_data_dir: C:\Users\Rishabh Singh\Downloads\FS-EEND\data\train
+  val_data_dir: C:\Users\Rishabh Singh\Downloads\FS-EEND\data\val
 task:
   max_speakers:
   spk_attractor:

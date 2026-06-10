@@ -93,6 +93,24 @@ class SpeakerDiarization(pl.LightningModule):
         self.log("train/emb_loss", emb_loss)
         self.log("train/tot_loss", tot_loss)
 
+        # DEBUG: Check if LoRA parameters are getting gradients (first batch only)
+        if batch_index == 0 and self.current_epoch == 0:
+            print("\n" + "="*50)
+            print("GRADIENT CHECK (first batch of first epoch)")
+            print("="*50)
+            lora_param_count = 0
+            for name, param in self.model.named_parameters():
+                if 'lora_' in name and param.requires_grad:
+                    lora_param_count += 1
+                    if param.grad is not None:
+                        print(f"✓ {name}: grad_norm={param.grad.norm().item():.6f}")
+                    else:
+                        print(f"✗ {name}: NO GRADIENT!")
+            
+            if lora_param_count == 0:
+                print("WARNING: No LoRA parameters found in model!")
+            print("="*50 + "\n")
+
         return tot_loss
 
     def validation_step(self, batch, batch_index):
